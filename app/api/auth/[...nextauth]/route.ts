@@ -19,11 +19,11 @@ export const authOptions:NextAuthOptions={
                 username:{label:"UserName",type:"text"},
                 password:{label:"Password",type:"password"},
             },
-            async authorize(credentials :Record<"username"|"password",string>| undefined){
-                if(!credentials || !credentials?.username || !credentials?.password){
+            async authorize(credentials) :Promise<{id:string;name:string;email:string; role:"admin"|"user"}| null>{
+                if(!credentials?.username || !credentials?.password){
                     throw new Error("Missing username and password")
                 }
-            const user ={id:'1',name:'John Doe',email:"johndoe@example.com"};
+            const user ={id:'1',name:'John Doe',email:"johndoe@example.com" ,role:"admin" as const};
             if(credentials.username==="john" && credentials.password=== "password"){
                 return user
             }
