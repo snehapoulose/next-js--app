@@ -2,6 +2,8 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider  from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
+import { JWT } from "next-auth/jwt";
+import { Session } from "inspector/promises";
 
 export const authOptions:NextAuthOptions={
     providers:[
@@ -34,6 +36,21 @@ export const authOptions:NextAuthOptions={
     secret:process.env.NEXTAUTH_SECRET,
     session:{
         strategy:"jwt"
+    },
+    // secret:process.env.NEXTAUTH_SECRET,
+    callbacks:{
+        async jwt({token,user}:{token:JWT;user?:{role?:"admin"|"user"}}){
+            if(user){
+                token.role = user.role||"user"
+            }
+            return token;
+        },
+        async session({session,token}:{session:Session,token:JWT}){
+            if(session.user){
+                session.user.role=token.role as "admin"|"user";
+            }
+            return session
+        }
     }
 };
 

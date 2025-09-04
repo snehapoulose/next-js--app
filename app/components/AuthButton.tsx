@@ -2,22 +2,20 @@
 
 import {signIn, signOut, useSession} from 'next-auth/react';
 export default function AuthButton() {
-  const {data:session,status} = useSession();
+  const {data:session} = useSession();
  console.log(session,'session data');
  console.log(status,'status')
- if(status === "loading") {
-    return <p>Loading Authentication ....</p>
+ if(!session) {
+    return <button onClick={()=>signIn()}>Sign In</button>
  }
  return(
     <div>
-        {session ?(
+        
             <div>
                 <p>Welcome {session.user?.name}</p>
+                <p>Role:{session.user?.role}</p>
                 <button onClick={()=>signOut()}>Sign Out</button>
                 </div>
-        ):(
-            <button onClick={()=>signIn()}>Sign In</button>
-        )}
     </div>
  )
 }
